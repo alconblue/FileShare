@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @sharedfolder.user %>
+</p>
+
+<p>
+  <strong>Shared email:</strong>
+  <%= @sharedfolder.shared_email %>
+</p>
+
+<p>
+  <strong>Shared user:</strong>
+  <%= @sharedfolder.shared_user_id %>
+</p>
+
+<p>
+  <strong>Folder:</strong>
+  <%= @sharedfolder.folder %>
+</p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @sharedfolder.message %>
+</p>
+
+<%= link_to 'Edit', edit_sharedfolder_path(@sharedfolder) %> |
+<%= link_to 'Back', sharedfolders_path %>

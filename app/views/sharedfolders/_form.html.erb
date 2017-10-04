@@ -1,0 +1,42 @@
+<%= form_for(sharedfolder) do |f| %>
+  <% if sharedfolder.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(sharedfolder.errors.count, "error") %> prohibited this sharedfolder from being saved:</h2>
+
+      <ul>
+      <% sharedfolder.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :shared_email %>
+    <%= f.text_field :shared_email %>
+  </div>
+
+  <div class="field">
+    <%= f.label :shared_user_id %>
+    <%= f.number_field :shared_user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :folder_id %>
+    <%= f.text_field :folder_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :message %>
+    <%= f.text_field :message %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

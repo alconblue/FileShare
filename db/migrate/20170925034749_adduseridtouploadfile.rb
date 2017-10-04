@@ -1,0 +1,5 @@
+class Adduseridtouploadfile < ActiveRecord::Migration[5.0]
+  def change
+  	add_reference :uploadfiles, :user, index: true
+  end
+end
