@@ -5,20 +5,12 @@ application up and running.
 
 Things you may want to cover:
 
-* Ruby version
+* Ruby version : ruby 2.3.1
 
-* System dependencies
+* System dependencies : ```ruby
+require 'devise'
+require 'paperclip'
+require 'acts_as_tree'
+```
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Database creation : Used mysql2 for database management. Run ```ruby rails db:create``` to create the database.
