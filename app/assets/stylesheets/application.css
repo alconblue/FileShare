@@ -99,3 +99,68 @@ body {
     background:#DFF1FF; 
     border:1px solid #AFDDFF; 
 }
+.folder  { 
+    background:url("../images/folder.png") no-repeat scroll left center transparent; 
+} 
+  
+.file { 
+    background:url("../images/file.png") no-repeat scroll left center transparent; 
+} 
+.folder.asset_details:hover, .shared_folder.asset_details:hover, .file.asset_details:hover  { 
+    border:1px solid #DFDFDF; 
+} 
+.folder.asset_details:hover  { 
+    background:url("../images/folder.png") no-repeat scroll left center #EFEFEF; 
+} 
+.shared_folder  { 
+    background:url("../images/shared_folder.png") no-repeat scroll left center transparent; 
+} 
+.shared_folder.asset_details:hover  { 
+    background:url("../images/shared_folder.png") no-repeat scroll left center #EFEFEF; 
+} 
+.file.asset_details:hover  { 
+    background:url("../images/file.png") no-repeat scroll left center #EFEFEF; 
+}
+.breadcrumbs { 
+   margin:10px 0; 
+   font-weight:bold; 
+} 
+.breadcrumbs a { 
+   color:#1D96EF; 
+   text-decoration:none; 
+}
+.actions { 
+    float:left; 
+    font-size:11px; 
+} 
+.share, .rename, .download, .delete{ 
+    float:left;  
+} 
+.asset_details .share a,.asset_details .rename a,.asset_details .download a,.asset_details .delete a{ 
+    border: 1px solid #CFE9FF; 
+    font-size: 11px; 
+    margin-left: 5px; 
+    padding: 0 2px; 
+} 
+.asset_details .share a:hover,.asset_details .rename a:hover,.asset_details .download a:hover,.asset_details .delete a:hover{ 
+    border:1px solid #8FCDFF; 
+} 
+  
+.asset_details .delete a{ 
+    color:#BF0B12; 
+    border:1px solid #FFCFD1; 
+} 
+  
+.asset_details .delete a:hover{ 
+    color:#BF0B12; 
+    border:1px solid #FF8F93; 
+}
+.ui-button-text-only .ui-button-text { 
+    font-size: 14px ; 
+    padding: 3px 10px !important; 
+} 
+.share .ui-button-text-only .ui-button-text { 
+    padding: 0 2px !important; 
+    font-size:11px; 
+    font-weight:normal; 
+}

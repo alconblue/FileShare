@@ -2,4 +2,10 @@
 
 <%= render 'form', uploadfile: @uploadfile %>
 
-<p><%= link_to 'Back To List', root_url %></p>
+<p> 
+<% if @uploadfile.folder %> 
+   <%= link_to "Back to '#{@uploadfile.folder.name}' Folder", browse_path(@uploadfile.folder) %> 
+<% else %> 
+   <%= link_to "Back", root_url %> 
+<% end %> 
+</p>

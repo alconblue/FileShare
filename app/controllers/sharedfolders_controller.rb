@@ -15,7 +15,13 @@ class SharedfoldersController < ApplicationController
 
   # GET /sharedfolders/new
   def new
-    @sharedfolder = Sharedfolder.new
+    @folder = Folder.find(params[:id])
+    if @folder.user_id == current_user.id
+      @sharedfolder = Sharedfolder.new
+      @sharedfolder.user_id = current_user.id
+      @sharedfolder.folder_id = @folder.id 
+    end
+    session[:id] = params[:id]
   end
 
   # GET /sharedfolders/1/edit
@@ -25,7 +31,15 @@ class SharedfoldersController < ApplicationController
   # POST /sharedfolders
   # POST /sharedfolders.json
   def create
-    @sharedfolder = Sharedfolder.new(sharedfolder_params)
+    @folder = Folder.find(session[:id])
+    if @folder.user_id == current_user.id
+      @sharedfolder = Sharedfolder.new(sharedfolder_params)
+      @sharedfolder.user_id = current_user.id
+      @sharedfolder.folder_id = @folder.id
+      @user = User.where(:email => @sharedfolder.shared_email).first
+      @sharedfolder.shared_user_id = @user.id
+      @sharedfolder.save
+    end
 
     respond_to do |format|
       if @sharedfolder.save

@@ -5,7 +5,7 @@ class FoldersController < ApplicationController
   # GET /folders
   # GET /folders.json
   def index
-    @folders = Folder.all
+    @folders = current_user.folders.all
   end
 
   # GET /folders/1
@@ -15,26 +15,31 @@ class FoldersController < ApplicationController
 
   # GET /folders/new
   def new
-    @folder = Folder.new
+    @folder = current_user.folders.new
+    if params[:folder_id] 
+     @current_folder = current_user.folders.find(params[:folder_id]) 
+     @folder.parent_id = @current_folder.id
+     @folder.save 
+   end
   end
 
   # GET /folders/1/edit
   def edit
+    @current_folder = @folder.parent
   end
 
   # POST /folders
   # POST /folders.json
   def create
-    @folder = Folder.new(folder_params)
-
-    respond_to do |format|
-      if @folder.save
-        format.html { redirect_to @folder, notice: 'Folder was successfully created.' }
-        format.json { render :show, status: :created, location: @folder }
+    @folder = current_user.folders.new(folder_params)
+    if @folder.save
+      if @folder.parent
+        redirect_to browse_path(@folder.parent)
       else
-        format.html { render :new }
-        format.json { render json: @folder.errors, status: :unprocessable_entity }
+        redirect_to root_url
       end
+    else
+      render :action => 'new'
     end
   end
 
@@ -55,17 +60,25 @@ class FoldersController < ApplicationController
   # DELETE /folders/1
   # DELETE /folders/1.json
   def destroy
-    @folder.destroy
-    respond_to do |format|
-      format.html { redirect_to folders_url, notice: 'Folder was successfully destroyed.' }
-      format.json { head :no_content }
+    @parent_folder = @folder.parent #grabbing the parent folder 
+  
+    #this will destroy the folder along with all the contents inside 
+    #sub folders will also be deleted too as well as all files inside 
+    @folder.destroy 
+    flash[:notice] = "Successfully deleted the folder and all the contents inside."
+  
+    #redirect to a relevant path depending on the parent folder 
+    if @parent_folder
+      redirect_to browse_path(@parent_folder) 
+    else
+      redirect_to root_url       
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_folder
-      @folder = Folder.find(params[:id])
+      @folder = current_user.folders.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

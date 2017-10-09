@@ -5,7 +5,7 @@ class UploadfilesController < ApplicationController
   # GET /uploadfiles
   # GET /uploadfiles.json
   def index
-    @uploadfiles = Uploadfile.all
+    @uploadfiles = current_user.uploadfiles.all
   end
 
   # GET /uploadfiles/1
@@ -15,9 +15,12 @@ class UploadfilesController < ApplicationController
 
   # GET /uploadfiles/new
   def new
-    @uploadfile = Uploadfile.new
-    @uploadfile.user_id = current_user.id
-    @uploadfile.save
+    @uploadfile = current_user.uploadfiles.new
+    if params[:folder_id] #if we want to upload a file inside another folder 
+      @current_folder = current_user.folders.find(params[:folder_id]) 
+      @uploadfile.folder_id = @current_folder.id
+      @uploadfile.save
+    end
   end
 
   # GET /uploadfiles/1/edit
@@ -27,17 +30,17 @@ class UploadfilesController < ApplicationController
   # POST /uploadfiles
   # POST /uploadfiles.json
   def create
-    @uploadfile = Uploadfile.new(uploadfile_params)
-    @uploadfile.user_id = current_user.id
-    @uploadfile.save
-    respond_to do |format|
-      if @uploadfile.save
-        format.html { redirect_to @uploadfile, notice: 'Uploadfile was successfully created.' }
-        format.json { render :show, status: :created, location: @uploadfile }
+    @uploadfile = current_user.uploadfiles.new(uploadfile_params) 
+    if @uploadfile.save 
+      flash[:notice] = "Successfully uploaded the file."
+  
+      if @uploadfile.folder #checking if we have a parent folder for this file 
+        redirect_to browse_path(@uploadfile.folder)  #then we redirect to the parent folder 
       else
-        format.html { render :new }
-        format.json { render json: @uploadfile.errors, status: :unprocessable_entity }
-      end
+        redirect_to root_url 
+      end      
+    else
+      render :action => 'new'
     end
   end
 
@@ -58,10 +61,13 @@ class UploadfilesController < ApplicationController
   # DELETE /uploadfiles/1
   # DELETE /uploadfiles/1.json
   def destroy
+    @parent_folder = @uploadfile.folder #grabbing the parent folder before deleting the record 
     @uploadfile.destroy
-    respond_to do |format|
-      format.html { redirect_to uploadfiles_url, notice: 'Uploadfile was successfully destroyed.' }
-      format.json { head :no_content }
+    flash[:notice] = "Successfully deleted the file."
+    if @parent_folder
+      redirect_to browse_path(@parent_folder) 
+    else
+      redirect_to root_url 
     end
   end
 
@@ -78,7 +84,7 @@ class UploadfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_uploadfile
-      @uploadfile = Uploadfile.find(params[:id])
+      @uploadfile = current_user.uploadfiles.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
