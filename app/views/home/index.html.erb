@@ -3,6 +3,7 @@
    <p>File sharing web application you can't ignore.</p> 
      
 <% else %> 
+    <%= @shared %>
     <div id="menu"> 
        <ul id= "top_menu">     
         <% if @current_folder %> 
@@ -22,7 +23,17 @@
        <div class="file_size_header">Size</div> 
        <div class="file_last_updated_header">Modified</div> 
    </div> 
-   <div class="asset_list"> 
+   <div class="asset_list">
+
+    <% @being_shared_folders.each do |folder| %> 
+      <div class="asset_details folder"> 
+        <div class="file_name"><%= link_to folder.name, browse_path(folder) %></div> 
+        <div class="file_size">-</div> 
+        <div class="file_last_updated">-</div> 
+        <div class="actions"> 
+        </div> 
+      </div> 
+    <% end %>  
     <!-- Listing Folders -->
     <% @folders.each do |folder| %> 
      <div class="asset_details folder"> 
