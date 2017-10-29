@@ -35,6 +35,7 @@ class FoldersController < ApplicationController
     if @folder.save
       if @folder.parent
         redirect_to browse_path(@folder.parent)
+        return
       else
         redirect_to root_url
       end
@@ -46,14 +47,10 @@ class FoldersController < ApplicationController
   # PATCH/PUT /folders/1
   # PATCH/PUT /folders/1.json
   def update
-    respond_to do |format|
-      if @folder.update(folder_params)
-        format.html { redirect_to @folder, notice: 'Folder was successfully updated.' }
-        format.json { render :show, status: :ok, location: @folder }
-      else
-        format.html { render :edit }
-        format.json { render json: @folder.errors, status: :unprocessable_entity }
-      end
+    if @folder.update(folder_params)
+      redirect_to browse_path(@folder.parent)
+    else
+      redirect_to root_url, :flash => {:error => "Could not create the folder, please try again in a while."}
     end
   end
 

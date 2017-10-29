@@ -21,12 +21,18 @@ class HomeController < ApplicationController
 
   def browse 
     #get the folders owned/created by the current_user 
-    @current_folder = current_user.folders.find(params[:folder_id])   
+    @current_folder1 = Folder.find(params[:folder_id])
+    if @current_folder1.user_id == current_user.id
+      @current_folder = @current_folder1
+    else
+      @current_folder = nil
+    end       
     
     if @current_folder.nil? 
       folder = Folder.find_by_id(params[:folder_id]) 
       
-      @current_folder ||= folder if current_user.has_share_access?(folder) 
+      @current_folder ||= folder if current_user.has_share_access?(folder)
+
       @is_this_folder_being_shared = true if @current_folder #just an instance variable to help hiding buttons on View   
     end
     
@@ -43,8 +49,7 @@ class HomeController < ApplicationController
 
       render :action => "index"
     else
-      flash[:error] = "Don't be cheeky! Mind your own folders!"
-      redirect_to root_url 
+      redirect_to root_url, :flash => {:error => "Don't be cheeky! Mind your own folders!"} 
     end
   end
 end

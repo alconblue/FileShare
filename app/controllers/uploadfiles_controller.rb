@@ -72,12 +72,14 @@ class UploadfilesController < ApplicationController
   end
 
   def get 
-    uploadfile = Uploadfile.find_by_id(params[:id]) 
-    if uploadfile and uploadfile.user_id = current_user.id
+    uploadfile = current_user.uploadfiles.find_by_id(params[:id])
+    uploadfile ||= Uploadfile.find(params[:id]) if current_user.has_share_access?(Uploadfile.find_by_id(params[:id]).folder) 
+    if uploadfile
       send_file uploadfile.file.path
+      return
     else
-      flash[:error] = "Don't be cheeky! Mind your own assets!"
-      redirect_to uploadfiles_path   
+      flash[:error] = "Don't be cheeky! Mind your own files!"
+      redirect_to root_url
     end
   end
 

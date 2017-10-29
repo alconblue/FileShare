@@ -2,18 +2,26 @@
    <h1>Welcome to ShareBox</h1> 
    <p>File sharing web application you can't ignore.</p> 
      
-<% else %> 
-    <%= @shared %>
+<% else %>
+  
+    <% if flash[:error].blank? %>
+    <% else %>
+    <div class="boxed"><%= flash[:error] %></div>
+    <% end %>
     <div id="menu"> 
-       <ul id= "top_menu">     
+       <% unless @is_this_folder_being_shared %> 
+        <ul id= "top_menu">    
         <% if @current_folder %> 
-          <li><%= link_to "Upload", new_sub_file_path(@current_folder) %></li> 
-          <li><%= link_to "New Folder", new_sub_folder_path(@current_folder) %></li> 
+            <li><%= link_to "Upload", new_sub_file_path(@current_folder) %></li> 
+            <li><%= link_to "New Folder", new_sub_folder_path(@current_folder) %></li> 
         <% else %> 
-          <li><%= link_to "Upload", new_uploadfile_path %></li> 
-          <li><%= link_to "New Folder", new_folder_path %></li> 
-        <% end %>
-       </ul> 
+            <li><%= link_to "Upload", new_uploadfile_path %></li> 
+            <li><%= link_to "New Folder", new_folder_path %></li> 
+        <% end %> 
+        </ul> 
+      <% else %> 
+        <h3>This folder is being shared to you by <%= @current_folder.user.name %></h3> 
+      <% end %> 
     </div>
   </br>
     <%= render :partial => "breadcrumbs" %>
@@ -31,6 +39,15 @@
         <div class="file_size">-</div> 
         <div class="file_last_updated">-</div> 
         <div class="actions"> 
+          <div class="share"> 
+          <%= link_to "Share", share_folder_path(folder) unless @is_this_folder_being_shared%> 
+        </div> 
+        <div class="rename"> 
+          <%= link_to "Rename", rename_folder_path(folder) unless @is_this_folder_being_shared%> 
+        </div> 
+        <div class="delete"> 
+          <%= link_to "Delete", folder, :method => :delete, data: { confirm: 'Are you sure to delete the folder and all of its contents?'} unless @is_this_folder_being_shared%> 
+        </div> 
         </div> 
       </div> 
     <% end %>  
@@ -48,7 +65,7 @@
               <%= link_to "Rename", rename_folder_path(folder) %>
             </div> 
             <div class="delete"> 
-              <%= link_to "Delete", folder, :confirm => 'Are you sure to delete the folder and all of its contents?', :method => :delete %>
+              <%= link_to "Delete", folder, :method => :delete, data: { confirm: 'Are you sure to delete the folder and all of its contents?'} %>
             </div> 
         </div> 
     </div> 
