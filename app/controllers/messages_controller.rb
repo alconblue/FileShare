@@ -16,6 +16,14 @@ class MessagesController < ApplicationController
   # GET /messages/new
   def new
     @message = Message.new
+    #user1 = User.where(:email => params[:email]).first
+    puts params.inspect
+    if !params[:controller]
+      redirect_to root_url, :flash => {:error => "#{params[:message]}"}
+      return
+      session[:email] = params["message"]["email"]
+    end  
+
   end
 
   # GET /messages/1/edit
@@ -26,16 +34,28 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     @message = Message.new(message_params)
-
-    respond_to do |format|
-      if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully created.' }
-        format.json { render :show, status: :created, location: @message }
-      else
-        format.html { render :new }
-        format.json { render json: @message.errors, status: :unprocessable_entity }
-      end
+    @message.user_id = current_user.id
+    user1 = User.where(:email => params[:message][:email]).first
+    # if user1
+    # else
+    #   redirect_to root_url, :flash => {:error => "No user with the email #{session[:email]} exists."}
+    #   return
+    # end    
+    convo = Conversation.where(:sender_id => current_user.id).first
+    if convo
+      convo = convo.where(:recipient_id => user1.id).first
+    end  
+    if convo
+      @message.conversation_id = convo.id
+    else
+      convo2 = Conversation.new
+      convo2.sender_id = current_user.id
+      convo2.recipient_id = user1.id
+      convo2.save
+      @message.conversation_id = convo2.id
     end
+    @message.save
+    redirect_to "/conversations"    
   end
 
   # PATCH/PUT /messages/1
@@ -70,6 +90,6 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:body, :conversation_id, :user_id)
+      params.require(:message).permit(:body, :conversation_id, :user_id, :email)
     end
 end
