@@ -169,3 +169,23 @@ body {
     border: 1px solid red;
     color:red;
 }
+
+.notice {
+    padding: 10px;
+    border: 1px solid green;
+    color:green;
+}
+
+.message-0 {
+    float:right;
+    color:darkgreen;
+}
+.message-1 {
+    float:left;
+    color:darkblue;
+}
+.message-box {
+    padding: 10px;
+    width:30%;
+    box-sizing: border-box;
+}

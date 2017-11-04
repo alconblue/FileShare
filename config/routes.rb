@@ -13,5 +13,6 @@ Rails.application.routes.draw do
   match "browse/:id/rename" => "folders#edit", :as => "rename_folder", via: [:post, :get]
   match "browse/:id/share" => "sharedfolders#new", :as => "share_folder", via: [:post, :get]
   get "/users" => "users#index"
+  match "messages/:recipient_id/add" => "messages#add", :as => "send_message", via: [:post, :get]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

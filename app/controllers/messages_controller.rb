@@ -41,7 +41,7 @@ class MessagesController < ApplicationController
     #   redirect_to root_url, :flash => {:error => "No user with the email #{session[:email]} exists."}
     #   return
     # end    
-    convo = Conversation.where(:sender_id => current_user.id).first
+    convo = Conversation.where(:sender_id => current_user.id)
     if convo
       convo = convo.where(:recipient_id => user1.id).first
     end  
@@ -82,6 +82,39 @@ class MessagesController < ApplicationController
     end
   end
 
+  def add
+    @messages = {}
+    @temp = []
+    @user = User.find(params[:recipient_id])
+    c1 = Conversation.where(:sender_id => current_user.id).where(:recipient_id => params[:recipient_id]).first
+    c2 = Conversation.where(:recipient_id => current_user.id).where(:sender_id => params[:recipient_id]).first
+    m1 = Message.where(:conversation_id => c1.id)
+    m2 = Message.where(:conversation_id => c2.id)
+    m1.each do |m|
+      h1 = {}
+      h1["body"] = m.body
+      h1["type"] = 0
+      @messages[m.created_at] = h1
+      @temp.push(m.created_at)
+    end
+    m2.each do |m|
+      h1={}
+      h1["body"] = m.body
+      h1["type"] = 1
+      @messages[m.created_at] = h1
+      @temp.push(m.created_at)
+    end
+    @temp = @temp.sort
+    if params[:body]
+      @message1 = Message.new
+      @message1.conversation_id = c1.id
+      @message1.body = params[:body]
+      @message1.user_id = current_user.id
+      @message1.save
+      redirect_to send_message_path(params[:recipient_id])
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message
@@ -90,6 +123,6 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:body, :conversation_id, :user_id, :email)
+      params.require(:message).permit(:body, :conversation_id, :user_id, :email, :recipient_id)
     end
 end

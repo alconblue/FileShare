@@ -47,14 +47,16 @@ class UploadfilesController < ApplicationController
   # PATCH/PUT /uploadfiles/1
   # PATCH/PUT /uploadfiles/1.json
   def update
-    respond_to do |format|
-      if @uploadfile.update(uploadfile_params)
-        format.html { redirect_to @uploadfile, notice: 'Uploadfile was successfully updated.' }
-        format.json { render :show, status: :ok, location: @uploadfile }
+    parent_folder = @uploadfile.folder
+    if @uploadfile.update(uploadfile_params)
+      flash[:notice] = "Successfull."
+      if parent_folder
+        redirect_to browse_path(parent_folder)
       else
-        format.html { render :edit }
-        format.json { render json: @uploadfile.errors, status: :unprocessable_entity }
-      end
+        redirect_to root_url
+      end    
+    else
+      render :edit
     end
   end
 

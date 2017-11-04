@@ -4,6 +4,35 @@ class ConversationsController < ApplicationController
   # GET /conversations
   # GET /conversations.json
   def index
+    @h = {}
+    @user = []
+    convo1 = Conversation.where(:sender_id => current_user.id)
+    convo2 = Conversation.where(:recipient_id => current_user.id)
+    convo1.each do |u|
+      h1 = {}
+      h1["id"] = u.recipient_id
+      messages = Message.where(:conversation_id => u.id).order(:created_at).last
+      h1["time"] = messages.created_at
+      h1["message"] = messages.body
+      @user.push(u.recipient.username)
+      @h[u.recipient.username] = h1
+    end
+    convo2.each do |u|
+      if @h.key?(u.sender.username)
+        messages = Message.where(:conversation_id => u.id).order(:created_at).last
+        if messages.created_at > @h[u.sender.username]["time"]
+          @h[u.sender.username]["message"] = messages.body
+        end
+      else
+        h1={}
+        h1["id"] = u.sender_id
+        messages = Message.where(:conversation_id => u.id).order(:created_at).last
+        h1["time"] = messages.created_at
+        h1["message"] = messages.body
+        @user.push(u.sender.username)
+        @h[u.sender.username] = h1
+      end
+    end
     @conversations = Conversation.all
   end
 

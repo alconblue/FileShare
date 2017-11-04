@@ -6,7 +6,11 @@
   
     <% if flash[:error].blank? %>
     <% else %>
-    <div class="boxed"><%= flash[:error] %></div>
+      <div class="boxed"><%= flash[:error] %></div>
+    <% end %>
+    <% if flash[:notice].blank? %>
+    <% else %>
+      <div class="notice"><%= flash[:notice] %></div>
     <% end %>
     <div id="menu"> 
        <% unless @is_this_folder_being_shared %> 
@@ -17,7 +21,8 @@
         <% else %> 
             <li><%= link_to "Upload", new_uploadfile_path %></li> 
             <li><%= link_to "New Folder", new_folder_path %></li> 
-        <% end %> 
+        <% end %>
+          <li><%= link_to "Messages", conversations_path%></li>
         </ul> 
       <% else %> 
         <h3>This folder is being shared to you by <%= @current_folder.user.name %></h3> 
